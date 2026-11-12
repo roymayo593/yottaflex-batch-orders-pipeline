@@ -1,90 +1,51 @@
-# AI interaction record
+# AI-Assisted Engineering Prompt Record
 
-Tool: OpenAI Codex (GPT-5 family)  
-Session date: 12 November 2026  
-Responses: omitted (the candidate FAQ states that responses are optional)
+Candidate: Soumyadeep Roy  
+Tool: OpenAI Codex  
+Project: YottaFlex Batch Orders Pipeline
 
-## Consolidated technical brief
+## Disclosure
 
-The detailed requirements originated in the official YottaFlex challenge. After the
-initial implementation, the candidate supplied a more technical prompt set to make the
-AI-assisted workflow easier to reproduce. The following consolidated brief is aligned
-with the code that was actually delivered; it is not presented as a verbatim chronology.
+Codex was used as an engineering assistant for implementation, testing, documentation, and review. The candidate supplied the official requirements, directed the delivery process, evaluated the resulting design, and retained responsibility for validation, explanation, and submission.
 
-### 1. Architecture and contracts
+The prompts below are a consolidated technical record reconstructed from the official requirements and completed implementation. They are not represented as a verbatim chronological transcript.
 
-Design a dependency-light Python and SQLite batch pipeline for `customers.csv` and
-`orders.csv`. Define exact source schemas, primary keys, nullability, the customer-order
-relationship, target tables, lineage fields, and a reviewable project structure.
+## Prompt 1 — Architecture and Source Contracts
 
-### 2. Validation policy
+Help me design a locally runnable batch pipeline using Python and SQLite. It must ingest customers.csv and orders.csv, validate both files, quarantine invalid rows, preserve lineage, and publish curated customer and order tables. Define the exact source columns, data types, primary keys, nullability, customer-to-order relationship, and project structure.
 
-Define deterministic customer and order rules for required fields, IDs, timestamps,
-email/country normalization, status values, currencies, amount bounds, duplicates, and
-referential integrity. Separate row-level quarantine outcomes from batch-level schema
-contract failures.
+## Prompt 2 — Validation Policy
 
-### 3. Reproducible data generation
+Define deterministic validation rules for customer_id, order_id, full_name, email, country_code, order timestamps, update timestamps, status, amount, currency, duplicates, and customer referential integrity. Separate normalization rules, row-level rejection rules, and batch-level schema failures.
 
-Create a fixed-seed generator with configurable customer/order counts and invalid-rate.
-Support a quick sample plus at least 100,000 orders. Inject deterministic invalid amounts,
-statuses, currencies, and customer references without placing answer labels in the input.
+## Prompt 3 — Reproducible Data Generator
 
-### 4. Traceable quarantine
+Implement a fixed-seed synthetic-data generator with configurable customer count, order count, seed, and invalid-record rate. It should support at least 100,000 orders and deterministically inject negative amounts, invalid statuses, unsupported currencies, and invalid customer references.
 
-Validate exact headers and row values. Store rejected rows with `run_id`, entity,
-`source_file`, source row number, raw record, reason codes, and rejection time. Preserve
-malformed rows, null keys, duplicates, and invalid references for diagnosis.
+## Prompt 4 — Traceable Quarantine
 
-### 5. Deterministic transformation and history
-
-Normalize fields, derive `amount_usd` using documented fixed rates, keep the latest
-`updated_at` for current customer/order tables, and retain distinct valid versions in
-history so late data is not silently lost.
-
-### 6. Idempotency and operations
-
-Fingerprint both inputs and the pipeline version so an identical successful batch is
-skipped. Record run IDs, timestamps, state, input/published/rejected/history-only counts,
-duration, and failure reason. Use one transaction for atomic publishing and document
-retry, restart, and backfill behavior.
-
-### 7. Automated edge-case tests
-
-Test the happy path, header-only empty batch, malformed rows, unexpected schema,
-duplicates, null keys, invalid customer references, negative amounts, invalid statuses,
-timestamp ordering, deterministic conversion, late data, failed-run correction, and
-identical reruns.
-
-### 8. Reconciliation evidence
-
-Produce per-run metrics, rejects, curated snapshots, and reconciliation showing that
-input rows balance to published, rejected, and history-only outcomes. Include sample SQL
-for run status, reject distribution, orphan checks, aggregates, and history versions.
-
-### 9. Performance evidence
-
-Generate 10,000 customers and 100,000 orders with a fixed seed, time generation and
-pipeline execution, record accepted/rejected counts, identify the transaction boundary as
-the primary optimization, and document the next scaling step.
-
-### 10. Reviewer documentation
-
-Write setup/run instructions, architecture, data dictionary, naming conventions,
-assumptions, limitations, operational recovery, performance evidence, design trade-offs,
-AI-use disclosure, and a complete interaction record.
-
-## Outcome and verification
-
-- Python standard-library runtime with SQLite persistence and CSV/JSON evidence.
-- 18 automated tests passed; lint passed.
-- The sample batch reconciled and an identical rerun returned `skipped`.
-- A seeded 100,000-order run completed in 2.09 seconds with 99,000 published and
-  1,000 deliberately invalid rows quarantined.
-- Five meaningful commits were published without secrets or generated runtime data.
+Implement validation that checks exact CSV headers and individual row values. Rejected records must retain run_id, entity, source_file, source_row, raw_record, reason_codes, and rejected_at so every invalid record remains traceable to its source.
 
 
-## Supplied source files
+## Prompt 5 — Idempotency and Recovery
 
-- `YottaFlex AI Candidate Project Submission Guidelines.pdf`
-- `YottaFlex AI Candidate Project-FAQ.pdf`
+Make identical reruns safe by hashing the customer file, order file, and pipeline version. If an identical batch already succeeded, return the original run ID without creating duplicates. Record run status, timestamps, input counts, published counts, rejected counts, history-only counts, duration, and failure reason. Use a transaction so batch failures cannot partially publish data.
+
+## Prompt 6 — Automated Testing
+
+Create pytest coverage for the happy path, header-only empty input, malformed rows, null identifiers, duplicates, invalid customer references, unexpected schema changes, negative amounts, invalid statuses, timestamp ordering, deterministic currency conversion, late data, corrected retries, reproducible generation, and identical reruns.
+
+## Prompt 7 — Reconciliation and Performance
+
+Generate per-run metrics, reject output, curated CSV snapshots, and a reconciliation report proving that source rows are accounted for as published, rejected, or history-only. Run a seeded benchmark using 10,000 customers and 100,000 orders. Document execution time, accepted and rejected counts, the transaction optimization, and the next scaling improvement.
+
+
+## Verification Results
+
+- 18 automated tests passed.
+- Static lint checks passed.
+- The sample batch reconciled successfully.
+- Reprocessing the identical sample returned status=skipped without duplicates.
+- A seeded run containing 10,000 customers and 100,000 orders completed in approximately 2.09 seconds.
+- The large run published 10,000 customers and 99,000 orders and quarantined 1,000 deliberately invalid orders.
+- No secrets or generated runtime data were committed.
