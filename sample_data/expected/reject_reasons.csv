@@ -1,0 +1,10 @@
+entity,source_row,reason_codes
+customer,6,null_customer_id
+customer,7,invalid_email
+customer,4,duplicate_key_in_batch|superseded_by_row_5
+order,7,invalid_status
+order,8,negative_amount
+order,9,invalid_order_ts
+order,4,duplicate_key_in_batch|superseded_by_row_5
+order,6,invalid_customer_reference
+

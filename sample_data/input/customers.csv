@@ -1,0 +1,8 @@
+customer_id,full_name,email,country_code,updated_at
+C001,Aisha Khan,AISHA.KHAN@example.com,in,2026-01-01T09:00:00Z
+C002,Liam Smith,liam.smith@example.com,GB,2026-01-01T09:05:00Z
+C003,Priya Roy,priya.roy@example.com,IN,2026-01-01T09:10:00Z
+C003,Priya Roy,priya.new@example.com,IN,2026-01-02T09:10:00Z
+,Missing Identifier,missing.id@example.com,US,2026-01-01T09:20:00Z
+C005,Bad Email,not-an-email,US,2026-01-01T09:25:00Z
+

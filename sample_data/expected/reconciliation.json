@@ -1,0 +1,10 @@
+{
+  "customers_input": 6,
+  "customers_published": 3,
+  "orders_input": 8,
+  "orders_published": 3,
+  "rejected_count": 8,
+  "curated_amount_usd": 261.60,
+  "run_balance_check": true
+}
+
