@@ -36,6 +36,18 @@ The candidate attached the official submission-guidelines PDF with this prompt.
 
 > okay lets finish and submit the assignment
 
+## Prompt 7
+
+> so is the entire assignment complete ?
+
+## Prompt 8
+
+> https://github.com/roymayo593 heres my github
+
+## Prompt 9
+
+> can you not open it in the in app browser and upload it yourself
+
 ## Supplied source files
 
 - `YottaFlex AI Candidate Project Submission Guidelines.pdf`
